@@ -78,7 +78,7 @@ fn is_url(url: &str) -> bool {
 }
 
 // Parse blocks that start with mermaid that are code blocks
-fn parse_code_block(words: &Vec<Vec<Word>>) {
+fn parse_code_block(words: &Vec<Vec<Word>>) -> Option<Component> {
     // get the head of vec vec
     let head = words.first().unwrap().first().unwrap().content();
     if head.starts_with("mermaid") {
@@ -97,10 +97,13 @@ fn parse_code_block(words: &Vec<Vec<Word>>) {
         print!("Mermaid block found");
 
         // create a ParseNode with image path as content
-        let parse_node = ParseNode::new(MdParseEnum::Image, "/tmp/diagram.png".to_string());
+        let parse_node = ParseNode::new(MdParseEnum::Image, "diagram.png".to_string());
         let component = parse_component(parse_node);
+
         println!("Component");
+        return Some(component);
     }
+    None
 }
 
 fn parse_component(parse_node: ParseNode) -> Component {
@@ -285,7 +288,10 @@ fn parse_component(parse_node: ParseNode) -> Component {
                 let content = node.content().to_owned();
                 words.push(vec![Word::new(content, word_type)]);
             }
-            parse_code_block(&words);
+            let r = parse_code_block(&words);
+            if let Some(r) = r {
+                return r;
+            }
             Component::TextComponent(TextComponent::new_formatted(TextNode::CodeBlock, words))
         }
 

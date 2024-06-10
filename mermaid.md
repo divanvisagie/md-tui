@@ -1,11 +1,4 @@
-To install mermaid use:
-
-```sh
-npm install -g @mermaid-js/mermaid-cli
-```
-
 ![myimage](diagram.png)
-
 ```mermaid
 sequenceDiagram
     participant Alice
@@ -15,6 +8,14 @@ sequenceDiagram
     Bob-->>Alice: Hi Alice, I'm good. How about you?
     Alice->>Bob: I'm doing well. Thanks!
 ```
+
+To install mermaid use:
+
+```sh
+npm install -g @mermaid-js/mermaid-cli
+```
+
+
 
 mmdc -i diagram.mmd -o diagram.png -t forest -b white
 
