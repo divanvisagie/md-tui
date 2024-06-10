@@ -17,6 +17,7 @@ use crate::nodes::{
 pub struct MdParser;
 
 pub fn parse_markdown(name: Option<&str>, file: &str, width: u16) -> ComponentRoot {
+    // File is the actual file contents
     let root: Pairs<'_, Rule> = if let Ok(file) = MdParser::parse(Rule::txt, file) {
         file
     } else {
@@ -28,6 +29,9 @@ pub fn parse_markdown(name: Option<&str>, file: &str, width: u16) -> ComponentRo
     let children = parse_text(root_pair).children_owned();
     let children = children.iter().dedup().cloned().collect();
     let parse_root = ParseRoot::new(name.map(str::to_string), children);
+
+    // Here children should countain the value {kind:mdt::parser::MdParseEnum::CodeBlock, ...}
+    // with the fields kind and content, the content being the entire text block
 
     let mut root = node_to_component(parse_root).add_missing_components();
 
@@ -59,6 +63,7 @@ fn node_to_component(root: ParseRoot) -> ComponentRoot {
     let mut children = Vec::new();
     let name = root.file_name().to_owned();
     for component in root.children_owned() {
+        // This is where each child is parsed  into a component
         let comp = parse_component(component);
         children.push(comp);
     }
