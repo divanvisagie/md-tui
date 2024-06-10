@@ -1,12 +1,20 @@
+# This is a title
+The following is an image
+
 ![myimage](diagram.png)
+
+The following is a sequence diagram
+rendered to an image
 ```mermaid
 sequenceDiagram
     participant Alice
     participant Bob
+    participant d as Divan
 
-    Alice->>Bob: Hello Bob, how are you?
-    Bob-->>Alice: Hi Alice, I'm good. How about you?
+    Alice->>Bob: Sends message
+    Bob-->>Alice: Returns gift
     Alice->>Bob: I'm doing well. Thanks!
+    d->>Alice: Hi Alice!
 ```
 
 To install mermaid use:
@@ -15,30 +23,3 @@ To install mermaid use:
 npm install -g @mermaid-js/mermaid-cli
 ```
 
-
-
-mmdc -i diagram.mmd -o diagram.png -t forest -b white
-
-For example, to convert a Mermaid file (`diagram.mmd`) to a PNG image:
-
-```sh
-mmdc -i diagram.mmd -o diagram.png
-```
-
-To convert the same file to an SVG:
-
-```sh
-mmdc -i diagram.mmd -o diagram.svg
-```
-
-3. **Additional options:**
-   - `-i`: specifies the input Mermaid file.
-   - `-o`: specifies the output image file.
-   - `-t`: sets the theme (default is `default`).
-   - `-b`: background color for the chart (default is `transparent`).
-
-Here is an example with more options:
-
-```sh
-mmdc -i diagram.mmd -o diagram.png -t forest -b white
-```

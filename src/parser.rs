@@ -86,21 +86,35 @@ fn parse_code_block(words: &Vec<Vec<Word>>) -> Option<Component> {
         // mmdc -i diagram.mmd -o diagram.png
         // docker run --rm -u `id -u`:`id -g` -v /tmp:/data minlag/mermaid-cli -i diagram.mmd -o diagram.png
         // create mmd file in tmp with words
+
+        // combine all words but exclude the first word
         let text = words
             .iter()
+            .skip(1)
             .map(|w| w.iter().map(|w| w.content()).join(" "))
             .join("\n");
         // save it to /tmp/diagram.mmd
         fs::write("/tmp/diagram.mmd", text.clone()).unwrap();
-        println!("Head: {}", head);
-        println!("Text: {}", text);
-        print!("Mermaid block found");
+
+        // docker run --rm -u `id -u`:`id -g` -v /tmp:/data minlag/mermaid-cli -i diagram.mmd -o diagram.png
+        // run the docker command to convert mmd to png
+        let output = std::process::Command::new("mmdc")
+            .arg("-p")
+            .arg("puppeteer-config.json")
+            .arg("-i")
+            .arg("/tmp/diagram.mmd")
+            .arg("-o")
+            .arg("/tmp/diagram.png")
+            .output()
+            .expect("Failed to execute command");
+
+        // write ouput to log file
+        fs::write("log.txt", format!("{:?}", output)).unwrap();
 
         // create a ParseNode with image path as content
-        let parse_node = ParseNode::new(MdParseEnum::Image, "diagram.png".to_string());
+        let parse_node = ParseNode::new(MdParseEnum::Image, "/tmp/diagram.png".to_string());
         let component = parse_component(parse_node);
 
-        println!("Component");
         return Some(component);
     }
     None
