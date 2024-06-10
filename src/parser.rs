@@ -1,3 +1,5 @@
+use std::fs;
+
 use itertools::Itertools;
 use pest::{
     iterators::{Pair, Pairs},
@@ -73,6 +75,32 @@ fn node_to_component(root: ParseRoot) -> ComponentRoot {
 
 fn is_url(url: &str) -> bool {
     url.starts_with("http://") || url.starts_with("https://")
+}
+
+// Parse blocks that start with mermaid that are code blocks
+fn parse_code_block(words: &Vec<Vec<Word>>) {
+    // get the head of vec vec
+    let head = words.first().unwrap().first().unwrap().content();
+    if head.starts_with("mermaid") {
+        // npm install -g @mermaid-js/mermaid-cli
+        // mmdc -i diagram.mmd -o diagram.png
+        // docker run --rm -u `id -u`:`id -g` -v /tmp:/data minlag/mermaid-cli -i diagram.mmd -o diagram.png
+        // create mmd file in tmp with words
+        let text = words
+            .iter()
+            .map(|w| w.iter().map(|w| w.content()).join(" "))
+            .join("\n");
+        // save it to /tmp/diagram.mmd
+        fs::write("/tmp/diagram.mmd", text.clone()).unwrap();
+        println!("Head: {}", head);
+        println!("Text: {}", text);
+        print!("Mermaid block found");
+
+        // create a ParseNode with image path as content
+        let parse_node = ParseNode::new(MdParseEnum::Image, "/tmp/diagram.png".to_string());
+        let component = parse_component(parse_node);
+        println!("Component");
+    }
 }
 
 fn parse_component(parse_node: ParseNode) -> Component {
@@ -257,6 +285,7 @@ fn parse_component(parse_node: ParseNode) -> Component {
                 let content = node.content().to_owned();
                 words.push(vec![Word::new(content, word_type)]);
             }
+            parse_code_block(&words);
             Component::TextComponent(TextComponent::new_formatted(TextNode::CodeBlock, words))
         }
 

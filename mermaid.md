@@ -1,7 +1,10 @@
 To install mermaid use:
+
 ```sh
 npm install -g @mermaid-js/mermaid-cli
 ```
+
+![myimage](diagram.png)
 
 ```mermaid
 sequenceDiagram
@@ -12,7 +15,6 @@ sequenceDiagram
     Bob-->>Alice: Hi Alice, I'm good. How about you?
     Alice->>Bob: I'm doing well. Thanks!
 ```
-
 
 mmdc -i diagram.mmd -o diagram.png -t forest -b white
 
@@ -39,4 +41,3 @@ Here is an example with more options:
 ```sh
 mmdc -i diagram.mmd -o diagram.png -t forest -b white
 ```
-
